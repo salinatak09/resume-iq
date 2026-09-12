@@ -5,6 +5,8 @@ import PasswordRequirement from "@/ui/PasswordRequirement";
 import { EyeIcon, EyeOffIcon, UserPlus } from "lucide-react";
 import { useState, ChangeEvent, SubmitEvent } from "react";
 import Link from "next/link";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 type FormData = {
   name: string;
@@ -16,6 +18,8 @@ type FormData = {
 type FormErrors = Partial<Record<keyof FormData, string>>;
 
 const Signup = () => {
+  const router= useRouter();
+
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -109,37 +113,29 @@ const Signup = () => {
       return;
     }
 
-    setIsSubmitting(true);
+    const { data, error } = await authClient.signUp.email({
+      ...formData
+    }, {
+      onRequest: (ctx) => {
+        setIsSubmitting(true);
+      },
+      onSuccess: (ctx) => {
+        setIsSubmitting(true);
+        router.replace('/dashboard');
+      },
+      onError: (ctx) => {
+        setIsSubmitting(false);
+        console.log("Signup error:", ctx.error);
+        alert("Something went wrong!"+ ctx.error);
+      },
+    });
 
-    try {
-      // Replace this with your API call.
-      //
-      // Example:
-      //
-      // const response = await fetch("/api/signup", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(formData),
-      // });
-
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      console.log("Signup data:", formData);
-
-      // Reset after successful signup if needed
-      // setFormData({
-      //   name: "",
-      //   email: "",
-      //   password: "",
-      //   confirmPassword: "",
-      // });
-    } catch (error) {
-      console.error("Signup failed:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
+    setFormData({
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    });
   };
 
   return (
@@ -348,7 +344,7 @@ const Signup = () => {
           <p className="mt-6 text-center text-sm text-slate-500">
             Already have an account?{" "}
             <Link
-              href="/auth?mode=signup"
+              href="/auth/login"
               className="font-semibold text-teal-600 hover:text-teal-700 hover:underline"
             >
               Login

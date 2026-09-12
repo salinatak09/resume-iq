@@ -1,15 +1,33 @@
-'use client';
+"use client";
 
+import { authClient } from '@/lib/auth-client';
 import { LogIn, Menu, UserPlus, X } from 'lucide-react';
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 const Navbar = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(true); // Placeholder for auth state
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+  const router = useRouter();
+
+  const { data: session, isPending } = authClient.useSession();
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
+  }
+
+  const handleLogout = async()=>{
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.replace("/auth/login");
+        },
+         onError: (ctx) => {
+          console.error(ctx.error);
+        },
+      },
+    });
   }
 
   return (
@@ -26,16 +44,18 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-4">
-            {!isAuthenticated ? (
+            { isPending ? (
+              <></>
+            ): !session?.user ? (
               <>
                 <Link 
-                  href="/auth" 
+                  href="/auth/login" 
                   className="text-sm font-medium text-teal-600 px-4 py-2 rounded-md hover:bg-teal-700 hover:text-white transition-colors"
                 >
                   Login
                 </Link>
                 <Link 
-                  href="/auth?mode=signup" 
+                  href="/auth/signup" 
                   className="text-sm font-medium bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition-colors"
                 >
                   Sign Up
@@ -67,10 +87,7 @@ const Navbar = () => {
                 <button
                   type="button"
                   className="rounded-md px-4 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
-                  onClick={() => {
-                    // TODO: logout
-                    setIsAuthenticated(false);
-                  }}
+                  onClick={handleLogout}
                 >
                   Logout
                 </button>
@@ -106,10 +123,12 @@ const Navbar = () => {
             className="border-t border-teal-100 py-4 md:hidden"
           >
             <nav className="flex flex-col gap-2">
-              {!isAuthenticated ? (
+              {isPending ? (
+                <></>
+              ) : !session?.user ? (
                 <>
                   <Link
-                    href="/auth?mode=login"
+                    href="/auth/login"
                     onClick={closeMobileMenu}
                     className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 transition-colors hover:bg-teal-600 hover:text-teal-50"
                   >
@@ -118,7 +137,7 @@ const Navbar = () => {
                   </Link>
 
                   <Link
-                    href="/auth?mode=signup"
+                    href="/auth/signup"
                     onClick={closeMobileMenu}
                     className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-teal-600 hover:text-teal-50"
                   >
@@ -155,8 +174,7 @@ const Navbar = () => {
                   <button
                     type="button"
                     onClick={() => {
-                      // TODO: logout
-                      setIsAuthenticated(false);
+                      handleLogout();
                       closeMobileMenu();
                     }}
                     className="rounded-lg px-4 py-3 text-left text-sm font-medium text-red-600 transition-colors hover:bg-red-50"

@@ -5,6 +5,8 @@ import FloatingInput from "@/ui/FloatingInput";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useState, ChangeEvent, SubmitEvent } from "react";
 import Link from "next/link";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 type FormData = {
   email: string;
@@ -22,6 +24,8 @@ const Login = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const router = useRouter();
 
   const validate = (): FormErrors => {
     const newErrors: FormErrors = {};
@@ -75,30 +79,28 @@ const Login = () => {
       return;
     }
 
-    setIsSubmitting(true);
-
     try {
-      // Replace this with your API call.
-      //
-      // Example:
-      //
-      // const response = await fetch("/api/login", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(formData),
-      // });
+      const { data, error } = await authClient.signIn.email({
+        ...formData,
+      }, {
+        onRequest: (ctx) => {
+          setIsSubmitting(true);
+        },
+        onSuccess: (ctx) => {
+          setIsSubmitting(true);
+          router.replace('/dashboard');
+        },
+        onError: (ctx) => {
+          setIsSubmitting(false);
+          console.log("Login error:", ctx.error);
+          alert("Something went wrong!"+ ctx.error);
+        },
+      });
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      console.log("Login data:", formData);
-
-      // Reset after successful login if needed
-      // setFormData({
-      //   email: "",
-      //   password: ""
-      // });
+      setFormData({
+        email: "",
+        password: ""
+      });
     } catch (error) {
       console.error("Login failed:", error);
     } finally {
@@ -210,7 +212,7 @@ const Login = () => {
           <p className="mt-6 text-center text-sm text-slate-500">
             Don't have an account?{" "}
             <Link
-              href="/auth?mode=login"
+              href="/auth/signup"
               className="font-semibold text-teal-600 hover:text-teal-700 hover:underline"
             >
               Sign up
