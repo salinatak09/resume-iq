@@ -1,10 +1,15 @@
 import Link from 'next/link';
-import StatCard from '@/components/StatCard';
-import AnalysisRow from '@/components/AnalysisRow';
+import StatCard from '@/ui/StatCard';
+import AnalysisRow from '@/ui/AnalysisRow';
+import { redirect } from 'next/navigation';
+import { getCurrentSession } from '@/server/auth';
 
 
-const Dashboard = () => {
-
+const Dashboard = async() => {
+  const session = await getCurrentSession();
+  if(!session){
+    redirect('/auth/login');
+  }
   // Real apps would fetch this data from an API or database
   const pastAnalyses = [
     { id: 1, role: 'Software Engineer', score: 82 },

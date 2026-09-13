@@ -1,27 +1,73 @@
 "use client";
 
 import { useState, DragEvent } from "react";
-import { Upload, FileText, X, Sparkles } from "lucide-react";
+import { Upload, FileText, X, Sparkles, Loader2 } from "lucide-react";
 
 export default function ResumeUpload() {
   const [file, setFile] = useState<File | null>(null);
   const [dragging, setDragging] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
 
-  const handleFile = (selectedFile?: File) => {
-    if (!selectedFile) return;
+
+  const uploadFile = async(selectedFile?: File) => {
+    if (!selectedFile || uploading) return;
 
     if (selectedFile.type !== "application/pdf") {
       alert("Please upload a PDF file.");
       return;
     }
 
+    // Check size - 10MB
+    if (selectedFile.size > 10 * 1024 * 1024) {
+      alert("File size must be less than 10MB.");
+      return;
+    }
+
     setFile(selectedFile);
+    setUploading(true);
+    setError(null);
+
+    try {
+      const formData = new FormData();
+
+      formData.append("file", selectedFile);
+
+      const response = await fetch("/api/resumes/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || "Failed to upload resume."
+        );
+      }
+
+      console.log("Resume uploaded:", data);
+
+      // For now:
+      // alert("Resume uploaded successfully!");
+
+      // Later you can redirect:
+      // router.push(`/resumes/${data.resume.id}`);
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong."
+      );
+    } finally {
+      setUploading(false);
+    }
   };
 
-  const handleDrop = (e: DragEvent<HTMLLabelElement>) => {
+  const handleDrop = async (e: DragEvent<HTMLLabelElement>) => {
     e.preventDefault();
     setDragging(false);
-    handleFile(e.dataTransfer.files?.[0]);
+    await uploadFile(e.dataTransfer.files?.[0]);
   };
 
   return (
@@ -64,7 +110,7 @@ export default function ResumeUpload() {
               type="file"
               accept="application/pdf"
               className="hidden"
-              onChange={(e) => handleFile(e.target.files?.[0])}
+              onChange={(e) => uploadFile(e.target.files?.[0])}
             />
 
             {file ? (
@@ -87,8 +133,10 @@ export default function ResumeUpload() {
                   onClick={(e) => {
                     e.preventDefault();
                     setFile(null);
+                    setError(null);
                   }}
                   className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500"
+                  disabled={uploading}
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -117,13 +165,30 @@ export default function ResumeUpload() {
             )}
           </label>
 
+          
+          {/* Error */}
+          {error && (
+            <div className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
+              {error}
+            </div>
+          )}
+
           {/* Analyze Button */}
           <button
             disabled={!file}
             className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-teal-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-teal-600/20 transition-all hover:bg-teal-700 hover:shadow-teal-600/30 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none cursor-pointer"
           >
-            <Sparkles className="h-4 w-4" />
-            Analyze Resume
+            {uploading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Uploading...
+              </>
+            ) : (
+              <>
+                <Sparkles className="h-4 w-4" />
+                Analyze Resume
+              </>
+            )}
           </button>
         </div>
       </div>
