@@ -2,18 +2,21 @@ import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 
 import { getDB } from "@/lib/db";
-import { saveResumeFile } from "@/lib/storage/local";
+// import { saveResumeFile } from "@/lib/storage/local";
 import { extractPdfText } from "@/lib/pdf";
 import { requireSession } from "@/server/auth";
-import { ApiError, UnauthorizedError } from "@/lib/errors";
+import { ApiError } from "@/lib/errors";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   try {
+
+    // Authentication
     const session = await requireSession();
     const userId = session.user.id;
 
+    // Read Upload
     const formData = await request.formData();
     const file = formData.get("file");
 
@@ -29,6 +32,7 @@ export async function POST(request: Request) {
       );
     }
 
+    // Validate File type & File size
     if (file.type !== "application/pdf") {
       return NextResponse.json(
         {
@@ -38,6 +42,22 @@ export async function POST(request: Request) {
         {
           status: 400,
         }
+      );
+    }
+
+    // convert pdf content into Uint8Array (acceptable for PDFParser)
+    const buffer = await file.arrayBuffer();
+    const bytes = new Uint8Array(buffer);
+
+    const pdfHeader = new TextDecoder().decode(bytes.slice(0, 5));
+
+    if (bytes.length < 5 || pdfHeader !== "%PDF-") {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Invalid PDF file",
+        },
+        { status: 400 }
       );
     }
 
@@ -56,6 +76,9 @@ export async function POST(request: Request) {
       );
     }
 
+    // Generate Resume Id
+    const resumeId = new ObjectId();
+
     // Save PDF first in local directory
     // const savedFile = await saveResumeFile(
     //   userId,
@@ -63,13 +86,13 @@ export async function POST(request: Request) {
     //   file
     // );
 
-    // convert pdf content into Uint8Array (acceptable for PDFParser)
-    const pdfData = new Uint8Array(await file.arrayBuffer());
+    // TODO: Save pdf in cloud storage
 
     // Extract text
-    const extractedText = await extractPdfText(pdfData);
+    const extractedText = await extractPdfText(bytes);
+    const normalizedText = extractedText.replace(/\s+/g, " ").trim();
 
-    if (!extractedText) {
+    if (!normalizedText) {
       return NextResponse.json(
         {
           success: false,
@@ -82,20 +105,30 @@ export async function POST(request: Request) {
       );
     }
 
+    if (normalizedText.length < 100) {
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            "Could not extract enough text from this PDF",
+        },
+        { status: 422 }
+      );
+    }
+
+    // Create & Insert Resume data in MongoDB 
     const now = new Date();
-    const resumeId = new ObjectId();
     const db = await getDB();
 
     const resume = {
       _id: resumeId,
       userId,
-      title: file.name.replace(/\.pdf$/i, ""),
+      title: file.name.replace(/\.pdf$/i, "").trim().slice(0, 200),
       extractedText,
     //   originalFileName: file.name,
     //   filePath: savedFile.filePath,
     //   mimeType: "application/pdf" as const,
     //   fileSize: file.size,
-    //   extractedText,
     //   status: "COMPLETED" as const,
       createdAt: now,
       updatedAt: now,
@@ -104,13 +137,16 @@ export async function POST(request: Request) {
     // Save pdf text in DB
     await db.collection("resumes").insertOne(resume);
 
+    // TODO: Analyze resume
+    // Decide should be store in same schema or different
+    // const analysis = await analyzeResume(text);
+    // then update DB
+
     return NextResponse.json(
       {
         success: true,
-
         resume: {
           id: resumeId.toString(),
-          text: extractedText,
           title: resume.title,
           // originalFileName:
           // resume.originalFileName,
