@@ -39,7 +39,7 @@ const Navbar = () => {
           {/* Logo / Brand Name */}
           <div className="flex-shrink-0">
             <Link href="/" className="text-xl font-bold text-teal-700 tracking-tight">
-              Resume IQ
+              ResumIQ
             </Link>
           </div>
 

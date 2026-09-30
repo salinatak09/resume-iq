@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Resume IQ",
+  title: "ResumIQ",
   description: "AI-powered Resume Analyzer & Job Matcher",
 };
 
