@@ -4,12 +4,13 @@ import { authClient } from '@/lib/auth-client';
 import { LogIn, Menu, UserPlus, X } from 'lucide-react';
 import Link from 'next/link'
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   const router = useRouter();
+  const pathname = usePathname();
 
   const { data: session, isPending } = authClient.useSession();
 
@@ -31,7 +32,7 @@ const Navbar = () => {
   }
 
   return (
-    <header className="w-full bg-teal-100 border-b border-gray-200 sticky top-0 z-100">
+    <header className="w-full bg-teal-100 border-b border-gray-200 sticky top-0 z-100 dark:text-white dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           
@@ -45,7 +46,10 @@ const Navbar = () => {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-4">
             { isPending ? (
-              <></>
+              <>
+                <div className='w-20 h-6 rounded-md bg-teal-50 mx-2 animate-pulse'></div>
+                <div className='w-20 h-6 rounded-md bg-teal-50 mx-2 animate-pulse'></div>
+              </>
             ): !session?.user ? (
               <>
                 <Link 
@@ -65,24 +69,24 @@ const Navbar = () => {
               <>
                 <Link
                   href="/dashboard"
-                  className="rounded-md px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-teal-50 hover:text-teal-600"
+                  className={`rounded-md px-4 py-2 text-slate-700 transition-colors hover:bg-teal-50 hover:text-teal-600 dark:text-white ${pathname === "/dashboard" ? "font-bold text-md" :"font-medium text-sm"}`}
                 >
                   Dashboard
                 </Link>
 
                 <Link
-                  href="/resume"
-                  className="rounded-md px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-teal-50 hover:text-teal-600"
+                  href="/resumes"
+                  className={`rounded-md px-4 py-2 text-slate-700 transition-colors hover:bg-teal-50 hover:text-teal-600 dark:text-white ${pathname === "/resumes" ? "font-bold text-md" : "font-medium text-sm"}`}
                 >
                   My Resumes
                 </Link>
 
-                <Link
+                {/* <Link
                   href="/profile"
-                  className="rounded-md px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-teal-50 hover:text-teal-600"
+                  className="rounded-md px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-teal-50 hover:text-teal-600 dark:text-white"
                 >
                   Profile
-                </Link>
+                </Link> */}
 
                 <button
                   type="button"
@@ -150,26 +154,26 @@ const Navbar = () => {
                   <Link
                     href="/dashboard"
                     onClick={closeMobileMenu}
-                    className="rounded-lg px-4 py-3 text-sm font-medium text-slate-700 transition-colors hover:bg-teal-50 hover:text-teal-600"
+                    className={`rounded-lg px-4 py-3 text-slate-700 transition-colors hover:bg-teal-50 hover:text-teal-600 ${pathname === "/dashboard" ? "font-bold text-md" : "font-medium text-sm"}`}
                   >
                     Dashboard
                   </Link>
 
                   <Link
-                    href="/resume"
+                    href="/resumes"
                     onClick={closeMobileMenu}
-                    className="rounded-lg px-4 py-3 text-sm font-medium text-slate-700 transition-colors hover:bg-teal-50 hover:text-teal-600"
+                    className={`rounded-lg px-4 py-3 text-slate-700 transition-colors hover:bg-teal-50 hover:text-teal-600 ${pathname === "/resumes" ? "font-bold text-md" : "font-medium text-sm"}`}
                   >
                     My Resumes
                   </Link>
 
-                  <Link
+                  {/* <Link
                     href="/profile"
                     onClick={closeMobileMenu}
                     className="rounded-lg px-4 py-3 text-sm font-medium text-slate-700 transition-colors hover:bg-teal-50 hover:text-teal-600"
                   >
                     Profile
-                  </Link>
+                  </Link> */}
 
                   <button
                     type="button"

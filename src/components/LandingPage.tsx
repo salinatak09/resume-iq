@@ -1,26 +1,28 @@
-'use client';
-
 import Link from 'next/link';
-import { useState } from 'react';
 import { CheckCircle } from 'lucide-react'
+import { getCurrentSession } from '@/server/auth';
 
-const LandingPage = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(true); // Placeholder for auth state
+const LandingPage = async() => {
+  const session = await getCurrentSession();
+
   return (
     <div className="flex flex-col items-center justify-center text-center py-20 px-4 max-w-5xl mx-auto">
-      <h1 className="text-5xl font-extrabold tracking-tight text-gray-900 sm:text-6xl mb-6">
+      <span className="text-xs uppercase font-bold tracking-widest text-teal-700 bg-teal-100/70 px-3 py-1 rounded-full">
+        AI-Powered Resume Analysis
+      </span>
+      <h1 className="text-5xl font-extrabold tracking-tight text-gray-900 sm:text-6xl my-6">
         Make Your Resume <span className="text-teal-600">Job-Ready</span>
       </h1>
-      <p className="text-xl text-gray-600 mb-8 max-w-2xl">
+      <p className="text-lg text-gray-600 mb-8 max-w-2xl">
         Upload your resume and get AI-powered feedback in seconds to beat the ATS systems.
       </p>
       
       {/* Primary Call to Action */}
       <Link 
-        href={ isAuthenticated ? "/dashboard" : "/auth"}
+        href={ session?.user ? "/dashboard" : "/auth/login"}
         className="bg-teal-600 text-white font-medium text-lg px-8 py-4 rounded-xl hover:bg-teal-700 transition-colors shadow-lg shadow-teal-600/20 mb-12"
       >
-        Analyze My Resume
+        Start Analyzing Resumes
       </Link>
 
       {/* Feature Checkmarks */}

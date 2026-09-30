@@ -9,18 +9,19 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@google/genai": "^2.23.0",
     "bcryptjs": "^3.0.3",
     "better-auth": "^1.7.4",
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^1.41.0",
     "mongodb": "^7.6.0",
-    "mongoose": "^9.9.5",
     "next": "16.3.4",
     "openai": "^7.10.0",
     "pdf-parse": "^2.4.5",
     "pdf-parser": "^1.0.5",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "recharts": "^3.10.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

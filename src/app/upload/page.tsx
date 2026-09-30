@@ -2,77 +2,65 @@
 
 import { useState, DragEvent } from "react";
 import { Upload, FileText, X, Sparkles, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { uploadResume } from "@/actions/resume-actions";
+import Link from "next/link";
 
 export default function ResumeUpload() {
   const [file, setFile] = useState<File | null>(null);
   const [dragging, setDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const router = useRouter();
 
+  const uploadFile = async()=>{
+    if (!file || uploading) return;
 
-  const uploadFile = async(selectedFile?: File) => {
-    if (!selectedFile || uploading) return;
-
-    if (selectedFile.type !== "application/pdf") {
+    if (file.type !== "application/pdf") {
       alert("Please upload a PDF file.");
       return;
     }
 
-    // Check size - 10MB
-    if (selectedFile.size > 10 * 1024 * 1024) {
-      alert("File size must be less than 10MB.");
+    // Check size - 5MB
+    if (file.size > 5 * 1024 * 1024) {
+      alert("File size must be less than 5MB.");
       return;
     }
 
-    setFile(selectedFile);
     setUploading(true);
     setError(null);
 
-    try {
-      const formData = new FormData();
+    const formData = new FormData();
+    formData.append("file", file);
 
-      formData.append("file", selectedFile);
+    const { success, resume, error} = await uploadResume(formData);
 
-      const response = await fetch("/api/resumes/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          data.error || "Failed to upload resume."
-        );
-      }
-
-      console.log("Resume uploaded:", data);
-
-      // For now:
-      // alert("Resume uploaded successfully!");
-
-      // Later you can redirect:
-      // router.push(`/resumes/${data.resume.id}`);
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Something went wrong."
-      );
-    } finally {
-      setUploading(false);
+    if(!success){
+      alert(error);
+    } else {
+      alert("Resume uploaded successfully!");
+      router.push(`/resumes/${resume?.id}`);
     }
-  };
 
-  const handleDrop = async (e: DragEvent<HTMLLabelElement>) => {
+    setUploading(false);
+  }
+
+  const handleDrop = (e: DragEvent<HTMLLabelElement>) => {
     e.preventDefault();
     setDragging(false);
-    await uploadFile(e.dataTransfer.files?.[0]);
+    setFile(e.dataTransfer.files?.[0]);
   };
 
   return (
-    <div className="w-full max-w-md mx-auto mt-8">
-      <div className="overflow-hidden rounded-2xl border border-teal-100 bg-white shadow-xl shadow-teal-900/5 mx-3">
+    <div className="w-full max-w-md mx-auto">
+      {/* Navigation */}
+      <Link
+        href={`/resumes`}
+        className="font-medium text-slate-500 hover:text-teal-600 transition-colors mx-3"
+      >
+        ← Back to Resumes
+      </Link>
+      <div className="overflow-hidden rounded-2xl border border-teal-100 bg-white shadow-xl shadow-teal-900/5 mx-3 mt-4">
         {/* Header */}
         <div className="border-b border-slate-100 px-6 py-5">
           <div className="flex items-center gap-3">
@@ -82,7 +70,7 @@ export default function ResumeUpload() {
 
             <div>
               <h2 className="text-lg font-semibold text-slate-900">
-                Analyze Resume
+                Upload Resume
               </h2>
               <p className="text-sm text-slate-500">
                 Upload your resume to get AI insights
@@ -110,7 +98,7 @@ export default function ResumeUpload() {
               type="file"
               accept="application/pdf"
               className="hidden"
-              onChange={(e) => uploadFile(e.target.files?.[0])}
+              onChange={(e)=>setFile(e.target.files?.[0] ?? null)}
             />
 
             {file ? (
@@ -159,7 +147,7 @@ export default function ResumeUpload() {
                 </p>
 
                 <p className="mt-3 text-xs text-slate-400">
-                  PDF only • Max 10MB
+                  PDF only • Max 5MB
                 </p>
               </>
             )}
@@ -173,10 +161,11 @@ export default function ResumeUpload() {
             </div>
           )}
 
-          {/* Analyze Button */}
+          {/* Upload Button */}
           <button
-            disabled={!file}
+            disabled={!file || uploading}
             className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-teal-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-teal-600/20 transition-all hover:bg-teal-700 hover:shadow-teal-600/30 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none cursor-pointer"
+            onClick={uploadFile}
           >
             {uploading ? (
               <>
@@ -185,8 +174,8 @@ export default function ResumeUpload() {
               </>
             ) : (
               <>
-                <Sparkles className="h-4 w-4" />
-                Analyze Resume
+                <Upload className="h-4 w-4" />
+                Upload Resume
               </>
             )}
           </button>
