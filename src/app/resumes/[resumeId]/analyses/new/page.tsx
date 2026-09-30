@@ -38,7 +38,7 @@ export default function NewAnalysisForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-6 max-w-2xl mx-auto">
+    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-6 max-w-2xl mx-auto mt-8">
       <div>
         <h3 className="text-xl font-bold text-slate-800">Generate New Analysis</h3>
         <p className="text-sm text-slate-500 mt-1">Choose how you want to evaluate this specific resume.</p>

@@ -52,7 +52,7 @@ export default function ResumeUpload() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full max-w-md mx-auto mt-8">
       {/* Navigation */}
       <Link
         href={`/resumes`}

@@ -26,7 +26,7 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="space-y-8 max-w-6xl mx-auto">
+    <div className="space-y-8 mt-8 max-w-6xl mx-auto">
       {/* Welcome Greeting */}
       <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
