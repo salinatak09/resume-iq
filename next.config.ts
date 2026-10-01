@@ -4,7 +4,8 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
   serverExternalPackages:[
-    "pdf-parse"
+    "pdf-parse",
+    "@napi-rs/canvas"
   ]
 };
 
