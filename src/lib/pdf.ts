@@ -1,13 +1,12 @@
 import "server-only";
 
-import { PDFParse } from "pdf-parse";
-
 export async function extractPdfText(
   data: Uint8Array
 ) {
   if (!data || data.length === 0) {
     throw new Error("PDF Data is empty");
   }
+  const { PDFParse } = await import("pdf-parse");
   const parser = new PDFParse({data});
 
   try {
