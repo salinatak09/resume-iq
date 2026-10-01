@@ -1,36 +1,184 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ResumIQ
 
-## Getting Started
+**AI-powered resume analysis and job targeting.**
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+ResumIQ helps you understand how well your resume fits a job and what you can improve. Upload your resume, analyze it standalone, or provide a specific job target to get AI-powered insights into your resume.
+
+---
+
+### Features
+
+- 📄 Upload and parse PDF resumes
+- 🤖 AI-powered analysis with Google Gemini 
+- 📊 Overall and ATS scores
+- 💪 Resume strengths and weaknesses
+- 🛠️ Existing, missing, and recommended skills
+- 💡 Personalized improvement suggestions
+- 🎯 Job-specific resume analysis
+- 🔐 Authentication with Better Auth
+- 📚 Resume and analysis history
+
+----
+
+### 🧠 How It Works
+**1. Upload your resume**
+
+Upload your resume as a PDF and resumIQ extracts the relevant information from it.
+
+**2. Choose an analysis type**
+
+You can analyze your resume in two ways:
+
+- **Standalone Analysis**
+
+  Analyze your resume without targeting a specific job. This gives you a general overview of your resume, including its overall score, ATS score, strengths, weaknesses, skills, missing skills, and suggestions.
+
+- **Job-Targeted Analysis**
+
+  Provide a specific job target along with your resume. resumIQ analyzes the relationship between your resume and the target role, helping identify relevant skills, missing skills, strengths, weaknesses, and improvement opportunities.
+
+**3. Get AI-powered insights**
+
+Google Gemini processes the extracted resume information and generates structured analysis.
+
+*You receive insights including:*
+- Overall score
+- ATS score
+- Strengths
+- Weaknesses
+- Existing skills
+- Missing skills
+- Recommended skills
+- Improvement suggestions
+
+---
+
+### 🛠️ Tech Stack
+
+| Technology        | Purpose                    |
+|-------------------|----------------------------|
+| Next.js           | Full-stack React framework |
+| TypeScript        | Type-safe development      |
+| Tailwind CSS      | Styling and UI             |
+| MongoDB           | Database                   |
+| Better Auth       | Authentication             |
+| Google Gemini     | AI-powered resume analysis |
+| PDF Parser        | Resume PDF processing      |
+| Recharts          | Data visualization         |
+| Vercel            | Deployment                 |
+
+---
+
+
+### 🏗️ Architecture
+
+ResumIQ follows a server-oriented architecture where authentication, resume processing, AI analysis, and database operations are handled on the server.
+
+---
+
+### 📁 Project Structure
+
+A simplified structure of the application:
+```
+resumIQ/
+├──src/
+|    ├── app/
+|    │   ├── auth/
+|    │   │   ├── login/
+|    │   │   └── signup/
+|    │   └── ...
+|    ├── components/
+|    │   └── ...
+|    ├── ui/
+|    │   └── ...
+|    ├── lib/
+|    │   └── ...
+|    ├── actions/
+|    │   └── ...
+|    ├── server/
+|    │   ├── dbqueries/
+|    │   └── ...
+|    └── types/
+|        └── ...
+├── public/
+├── ...
+├── .env.local
+└── package.json
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The exact structure may vary as the project evolves.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Getting Started
 
-## Learn More
+1. Clone the repository
+``` 
+  git clone https://github.com/salinatak09/resumiq.git
+  cd resumiq 
+```
 
-To learn more about Next.js, take a look at the following resources:
+2. Install dependencies
+```
+  npm install
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. Configure environment variables
+```
+Create a .env.local file:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+MONGODB_URI=<Mongo-uri>
+BETTER_AUTH_SECRET=<better-auth-secret-key>
+BETTER_AUTH_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+GEMINI_API_KEY=<api-key>
+```
 
-## Deploy on Vercel
+Add the required values for your environment.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4. Run the development server
+```
+  npm run dev
+```
+Open http://localhost:3000 in your browser.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🔮 Future Improvements
+
+Potential improvements for future versions include:
+
+- Resume editing and optimization
+- More detailed ATS analysis
+- Job description parsing and matching improvements
+- More granular scoring
+- Resume version tracking
+- Exportable analysis reports
+- Additional AI models
+- More advanced job-specific recommendations
+
+---
+
+### Project Status
+
+ResumIQ is a personal project built to explore AI-powered resume analysis, job targeting, document processing, and modern full-stack application development.
+
+The project is actively evolving.
+
+---
+
+### 👨‍💻 Author
+
+Built as a personal project to explore the intersection of AI, career tools, and modern web development.
+
+ResumIQ — Understand your resume. Target the right job.
+
+---
+
+### License
+
+No license has been added yet.
+
+---
