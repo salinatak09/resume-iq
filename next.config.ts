@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   serverExternalPackages:[
     "pdf-parse",
+    "pdfjs-dist",
     "@napi-rs/canvas"
   ]
 };
