@@ -23,7 +23,7 @@ export default async function ResumeDetailPage({ params }: PageProps) {
   }
 
   return (
-    <div className="space-y-6 mt-8">
+    <div className="space-y-6 my-8">
       {/* Navigation breadcrumb */}
       <Link
         href={`/resumes`}

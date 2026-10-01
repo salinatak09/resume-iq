@@ -29,7 +29,7 @@ export default async function AnalysisResultPage({ params }: PageProps) {
   }
 
   return (
-    <div className="mx-auto max-w-6xl text-sm mt-8">
+    <div className="mx-auto max-w-6xl text-sm my-8">
       {/* Navigation breadcrumb */}
       <Link
         href={`/resumes/${resumeId}`}

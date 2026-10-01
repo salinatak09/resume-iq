@@ -2,8 +2,6 @@
 
 **AI-powered resume analysis and job targeting.**
 
----
-
 ResumIQ helps you understand how well your resume fits a job and what you can improve. Upload your resume, analyze it standalone, or provide a specific job target to get AI-powered insights into your resume.
 
 ---
@@ -65,7 +63,7 @@ Google Gemini processes the extracted resume information and generates structure
 | MongoDB           | Database                   |
 | Better Auth       | Authentication             |
 | Google Gemini     | AI-powered resume analysis |
-| PDF Parser        | Resume PDF processing      |
+| PDF Parse         | Resume PDF processing      |
 | Recharts          | Data visualization         |
 | Vercel            | Deployment                 |
 
@@ -146,7 +144,7 @@ Open http://localhost:3000 in your browser.
 
 ---
 
-## 🔮 Future Improvements
+### 🔮 Future Improvements
 
 Potential improvements for future versions include:
 

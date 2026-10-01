@@ -15,7 +15,7 @@ export default async function ResumesPage() {
   }
 
   return (
-    <div className="space-y-6 mt-8">
+    <div className="space-y-6 my-8">
       {/* Top Bar with Title & Upload CTA */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>

@@ -1,3 +1,5 @@
+import "server-only";
+
 import { PDFParse } from "pdf-parse";
 
 export async function extractPdfText(
