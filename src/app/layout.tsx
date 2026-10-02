@@ -27,7 +27,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col text-slate-900">
         <div className="bg-teal-50 min-h-dvh font-sans dark:bg-gray-900 dark:text-white">
           <Navbar/>
-          <main className="flex-1 max-w-5xl mx-auto text-teal-600 p-8">
+          <main className="flex-1 max-w-5xl mx-auto text-teal-600 px-8">
             {children}
           </main>
         </div>
